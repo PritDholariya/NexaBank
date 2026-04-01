@@ -1,0 +1,13 @@
+server:
+  port: 8761 # 8761 is the standard port for a Eureka Server
+
+spring:
+  application:
+    name: discovery-server # This is the name we'll see in the logs
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false # We are the server, we don't register ourselves
+    fetch-registry: false       # We are the server, we don't need to fetch a copy from anyone else
