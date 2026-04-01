@@ -4,11 +4,15 @@ server:
 spring:
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: account-service-route
+          uri: lb://ACCOUNT-SERVICE # lb stands for Load Balancer. It asks the Phonebook (Eureka) for the IP address!
+          predicates:
+            - Path=/api/accounts/** # Any URL starting with this gets sent to the Account Service
 
-# Tell the Gateway where to find the Discovery Server Phonebook
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-
-# We will add actual Router Rules here later once we build the Account Service!
