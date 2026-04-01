@@ -25,6 +25,8 @@
     <!-- We will add our microservice module paths here later -->
     <modules>
         <module>services/discovery-server</module>  
+        <module>services/apigateway</module>
+        <module>services/accountservice</module>
     </modules>
 
     <!-- dependencyManagement acts like a blueprint for dependencies -->
