@@ -1,9 +1,9 @@
 package com.nexabank.accountservice.dto;
 
+import com.nexabank.accountservice.entity.CustomerStatus;
+
 public record AccountRegistrationResponse(
-    String clientId,
-    String iban,
-    String bic,
-    String initialPassword,
+    Long customerId,
+    CustomerStatus status,
     String message
 ) {}

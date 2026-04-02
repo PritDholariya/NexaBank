@@ -20,8 +20,20 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String clientId; // e.g. NEXA-983193
+    // These are no longer generated immediately!
+    @Column(unique = true)
+    private String clientId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CustomerStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountType preferredAccountType;
+
+    @Column(nullable = false)
+    private Boolean requiresPasswordChange;
 
     @Column(nullable = false)
     private String name;
@@ -43,8 +55,8 @@ public class Customer {
 
     private String photoUrl; // Optional for now
 
-    @Column(nullable = false)
-    private String passwordHash; // The encrypted initial password
+    // We do not have a password until the Admin approves the account!
+    private String passwordHash; 
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
