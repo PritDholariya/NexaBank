@@ -9,6 +9,7 @@ import com.nexabank.accountservice.entity.CustomerStatus;
 import com.nexabank.accountservice.repository.AccountRepository;
 import com.nexabank.accountservice.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -27,6 +29,7 @@ public class AccountService {
     // STEP 1: USER APPLICATION
     @Transactional 
     public AccountRegistrationResponse registerCustomerAccount(AccountRegistrationRequest request) {
+        log.info("Starting account registration process for: {}", request.email());
         
         Customer customer = Customer.builder()
                 .name(request.name())
@@ -55,9 +58,13 @@ public class AccountService {
     // STEP 2: ADMIN APPROVAL
     @Transactional 
     public AccountApprovalResponse approveCustomerApplication(Long customerId) {
+        log.info("Admin approval process initiated for customer ID: {}", customerId);
         
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found!"));
+                .orElseThrow(() -> {
+                    log.error("Approval failed. Customer ID {} not found.", customerId);
+                    return new RuntimeException("Customer not found!");
+                });
 
         if (customer.getStatus() != CustomerStatus.PENDING) {
             throw new RuntimeException("Customer is not purely PENDING. Current status: " + customer.getStatus());
@@ -98,7 +105,11 @@ public class AccountService {
     }
 
     public Account getAccount(Long id) {
+        log.info("Fetching account by ID: {}", id);
         return accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
+                .orElseThrow(() -> {
+                    log.error("Account ID {} not found.", id);
+                    return new RuntimeException("Account not found with ID: " + id);
+                });
     }
 }
