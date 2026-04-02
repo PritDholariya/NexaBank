@@ -112,4 +112,27 @@ public class AccountService {
                     return new RuntimeException("Account not found with ID: " + id);
                 });
     }
+
+    // --- INTERNAL APIs for AUTH SERVICE ---
+
+    public boolean verifyCustomerCredentials(String clientId, String password) {
+        return customerRepository.findByClientId(clientId)
+                .map(customer -> customer.getPasswordHash().equals(password))
+                .orElse(false);
+    }
+
+    public boolean requiresPasswordChange(String clientId) {
+        return customerRepository.findByClientId(clientId)
+                .map(Customer::getRequiresPasswordChange)
+                .orElse(false);
+    }
+
+    @Transactional
+    public void updatePassword(String clientId, String newPassword) {
+        Customer customer = customerRepository.findByClientId(clientId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        customer.setPasswordHash(newPassword);
+        customer.setRequiresPasswordChange(false);
+        customerRepository.save(customer);
+    }
 }

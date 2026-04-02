@@ -11,6 +11,11 @@ spring:
           uri: lb://ACCOUNT-SERVICE # lb stands for Load Balancer. It asks the Phonebook (Eureka) for the IP address!
           predicates:
             - Path=/api/accounts/** # Any URL starting with this gets sent to the Account Service
+        
+        - id: auth-service-route
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
 
 eureka:
   client:

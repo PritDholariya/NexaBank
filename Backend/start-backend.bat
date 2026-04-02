@@ -20,6 +20,7 @@ timeout /t 15
 :: Start the Gateway and Account Service
 start "API Gateway" cmd /k mvn spring-boot:run -pl services/apigateway
 start "Account Service" cmd /k mvn spring-boot:run -pl services/accountservice
+start "Auth Service" cmd /k mvn spring-boot:run -pl services/authservice
 
 echo.
 echo ==========================================

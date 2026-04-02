@@ -42,4 +42,25 @@ public class AccountController {
         log.info("Received request to fetch account details for account ID: {}", id);
         return ResponseEntity.ok(accountService.getAccount(id));
     }
+
+    // --- INTERNAL APIs FOR AUTH SERVICE ---
+    
+    @Operation(summary = "Verify Credentials", description = "[INTERNAL] Dedicated endpoint for the Auth Service to verify standard core banking credentials.")
+    @PostMapping("/internal/verify")
+    public ResponseEntity<Boolean> verifyCredentials(@RequestParam("clientId") String clientId, @RequestParam("password") String password) {
+        return ResponseEntity.ok(accountService.verifyCustomerCredentials(clientId, password));
+    }
+
+    @Operation(summary = "Password Reset Requirement Check", description = "[INTERNAL] Endpoint to verify if a user's initial temporary password must still be changed.")
+    @PostMapping("/internal/requires-password-change")
+    public ResponseEntity<Boolean> requiresPasswordChange(@RequestParam("clientId") String clientId) {
+        return ResponseEntity.ok(accountService.requiresPasswordChange(clientId));
+    }
+
+    @Operation(summary = "Update Account Password", description = "[INTERNAL] Called by Auth Service to update a user's login password credentials securely.")
+    @PostMapping("/internal/change-password")
+    public ResponseEntity<Void> changePassword(@RequestParam("clientId") String clientId, @RequestParam("newPassword") String newPassword) {
+        accountService.updatePassword(clientId, newPassword);
+        return ResponseEntity.ok().build();
+    }
 }

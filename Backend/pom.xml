@@ -27,6 +27,7 @@
         <module>services/discovery-server</module>  
         <module>services/apigateway</module>
         <module>services/accountservice</module>
+        <module>services/authservice</module>
     </modules>
 
     <!-- dependencyManagement acts like a blueprint for dependencies -->
