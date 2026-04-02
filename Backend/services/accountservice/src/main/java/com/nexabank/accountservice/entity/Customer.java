@@ -5,36 +5,46 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "customers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Account {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String iban; // International Bank Account Number
+    private String clientId; // e.g. NEXA-983193
 
     @Column(nullable = false)
-    private String bic; // Bank Identifier Code
+    private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AccountType accountType; // SAVINGS or CURRENT
-
-    @Column(nullable = false)
-    private Long customerId; // The Database ID of the Customer who owns this account
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
-    private BigDecimal balance;
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(nullable = false, unique = true)
+    private String governmentId; // SSN, Passport, or National ID
+
+    private String photoUrl; // Optional for now
+
+    @Column(nullable = false)
+    private String passwordHash; // The encrypted initial password
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -10,12 +10,16 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    // MAGIC: We don't have to write the SQL code for these! 
+    
+        Optional<Account> findByIban(String iban);
+        List<Account> findByCustomerId(Long customerId);
+
+       // MAGIC: We don't have to write the SQL code for these! 
     // Spring Boot reads the method name and automatically writes: "SELECT * FROM accounts WHERE account_number = ?"
-    Optional<Account> findByAccountNumber(String accountNumber);
+    // Optional<Account> findByAccountNumber(String accountNumber);
 
     // Automatically writes: "SELECT * FROM accounts WHERE user_id = ?"
-    List<Account> findByUserId(Long userId);
+    // List<Account> findByUserId(Long userId);
 
     /* 
        Note: Because we extended JpaRepository, we also get these for FREE without typing them:
