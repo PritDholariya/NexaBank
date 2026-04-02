@@ -4,9 +4,55 @@ This frontend uses Next.js App Router with a scalable, feature-first structure.
 
 ## Run Locally
 
+This repository currently contains the NexaBank frontend built with Next.js.
+
+## Frontend Setup
+
+### 1. Go to the frontend app
+
+```bash
+cd frontend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start the development server
+
 ```bash
 npm run dev
 ```
+
+The frontend will run locally at [http://localhost:3000](http://localhost:3000).
+
+## Available Scripts
+
+Run these commands from the `frontend/` directory:
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+
+
+## Notes
+
+- The main landing page lives in `frontend/app/page.tsx`.
+- Shared reusable UI components live in `frontend/components/`.
+- The reusable landing-page navbar lives in `frontend/components/navbar.tsx`.
+
 
 ## Folder Structure
 
