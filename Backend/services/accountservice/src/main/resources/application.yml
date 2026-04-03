@@ -1,0 +1,25 @@
+server:
+  port: 8081 # This runs on its own unique port
+
+spring:
+  application:
+    name: account-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/nexa_bank
+    username: nexa
+    password: nexa_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # Automatically creates SQL tables from Java code
+    show-sql: true # Prints the SQL queries in the console for us to learn from
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
