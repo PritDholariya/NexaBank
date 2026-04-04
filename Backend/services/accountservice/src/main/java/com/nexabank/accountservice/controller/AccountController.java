@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Slf4j
 @RestController 
+@Tag(name = "Account Management", description = "Endpoints for registering and managing customer accounts")
 @RequestMapping("/api/accounts") 
 @RequiredArgsConstructor
 public class AccountController {
@@ -45,19 +46,19 @@ public class AccountController {
 
     // --- INTERNAL APIs FOR AUTH SERVICE ---
     
-    @Operation(summary = "Verify Credentials", description = "[INTERNAL] Dedicated endpoint for the Auth Service to verify standard core banking credentials.")
+    @io.swagger.v3.oas.annotations.Hidden
     @PostMapping("/internal/verify")
     public ResponseEntity<Boolean> verifyCredentials(@RequestParam("clientId") String clientId, @RequestParam("password") String password) {
         return ResponseEntity.ok(accountService.verifyCustomerCredentials(clientId, password));
     }
 
-    @Operation(summary = "Password Reset Requirement Check", description = "[INTERNAL] Endpoint to verify if a user's initial temporary password must still be changed.")
+    @io.swagger.v3.oas.annotations.Hidden
     @PostMapping("/internal/requires-password-change")
     public ResponseEntity<Boolean> requiresPasswordChange(@RequestParam("clientId") String clientId) {
         return ResponseEntity.ok(accountService.requiresPasswordChange(clientId));
     }
 
-    @Operation(summary = "Update Account Password", description = "[INTERNAL] Called by Auth Service to update a user's login password credentials securely.")
+    @io.swagger.v3.oas.annotations.Hidden
     @PostMapping("/internal/change-password")
     public ResponseEntity<Void> changePassword(@RequestParam("clientId") String clientId, @RequestParam("newPassword") String newPassword) {
         accountService.updatePassword(clientId, newPassword);

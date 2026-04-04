@@ -17,6 +17,28 @@ spring:
           predicates:
             - Path=/api/auth/**
 
+        - id: openapi-account
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/v3/api-docs/account-service
+          filters:
+            - RewritePath=/v3/api-docs/account-service, /v3/api-docs
+
+        - id: openapi-auth
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/v3/api-docs/auth-service
+          filters:
+            - RewritePath=/v3/api-docs/auth-service, /v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Account Service
+        url: /v3/api-docs/account-service
+      - name: Auth Service
+        url: /v3/api-docs/auth-service
+
 eureka:
   client:
     service-url:

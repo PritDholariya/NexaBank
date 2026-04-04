@@ -10,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Authentication Management", description = "Endpoints for user login and password management")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class AuthController {
     private final AccountServiceClient accountServiceClient; // The Phone Line to AccountService!
     private final JwtUtils jwtUtils; // The cryptographic token generator
 
+    @Operation(summary = "Authenticate User", description = "Verifies the client ID and password to grant an access token.")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         log.info("Attempting login for Client ID: {}", request.clientId());
@@ -45,6 +49,7 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(token, "Login Successful!"));
     }
 
+    @Operation(summary = "Change Password", description = "Changes the temporary password to a user-defined secure password and auto-logs them in.")
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
         log.info("Attempting password reset for Client ID: {}", request.clientId());
