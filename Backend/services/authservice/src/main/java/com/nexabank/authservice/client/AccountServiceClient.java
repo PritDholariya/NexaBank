@@ -12,7 +12,7 @@ public interface AccountServiceClient {
     // Notice how these perfectly match the URLs we built in AccountController!
     
     @PostMapping("/api/accounts/internal/verify")
-    Boolean verifyCredentials(@RequestParam("clientId") String clientId, @RequestParam("password") String password);
+    String verifyCredentials(@RequestParam("clientId") String clientId, @RequestParam("password") String password);
 
     @PostMapping("/api/accounts/internal/requires-password-change")
     Boolean requiresPasswordChange(@RequestParam("clientId") String clientId);

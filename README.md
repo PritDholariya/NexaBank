@@ -83,8 +83,8 @@ mvn spring-boot:run -pl services/authservice
 Once all services are up and running, you can interact with the backend endpoints via the API Gateway or view their localized Swagger UI pages.
 
 ### Interactive Swagger UI (OpenAPI)
-The `accountservice` provides a Swagger UI out of the box. Navigate to:
-👉 **[http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)**
+The `accountservice & authservice` provides a Swagger UI out of the box. Navigate to:
+👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
 
 ### Key External Endpoints
 All external traffic should ideally go through the API Gateway running on port `8080`.

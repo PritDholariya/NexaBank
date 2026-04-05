@@ -31,4 +31,16 @@ public class EmailService {
         log.info("IMPORTANT: You must change your password upon first login!");
         log.info("==========================================================");
     }
+
+    public void sendRejectionEmail(String toEmail, String name, String reason) {
+        log.info("==========================================================");
+        log.info("📧 MOCK EMAIL SENT TO: {}", toEmail);
+        log.info("Subject: NexaBank Application Update");
+        log.info("Body:");
+        log.info("Hello {},", name);
+        log.info("Unfortunately, your NexaBank application has been REJECTED.");
+        log.info("Reason for Rejection: {}", reason);
+        log.info("Please review this feedback, make the necessary changes, and try again.");
+        log.info("==========================================================");
+    }
 }

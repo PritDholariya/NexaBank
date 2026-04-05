@@ -3,9 +3,12 @@ package com.nexabank.accountservice.service;
 import com.nexabank.accountservice.dto.AccountRegistrationRequest;
 import com.nexabank.accountservice.dto.AccountRegistrationResponse;
 import com.nexabank.accountservice.dto.AccountApprovalResponse;
+import com.nexabank.accountservice.dto.UserProfileResponse;
+import java.util.List;
 import com.nexabank.accountservice.entity.Account;
 import com.nexabank.accountservice.entity.Customer;
 import com.nexabank.accountservice.entity.CustomerStatus;
+import com.nexabank.accountservice.entity.Role;
 import com.nexabank.accountservice.repository.AccountRepository;
 import com.nexabank.accountservice.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -104,6 +107,29 @@ public class AccountService {
         );
     }
 
+    public List<Customer> getCustomersByStatus(CustomerStatus status) {
+        if (status == null) {
+            return customerRepository.findAll();
+        }
+        return customerRepository.findByStatus(status);
+    }
+
+    @Transactional
+    public void rejectCustomerApplication(Long customerId, String reason) {
+        log.info("Admin rejecting customer ID: {} for reason: {}", customerId, reason);
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found!"));
+
+        if (customer.getStatus() != CustomerStatus.PENDING) {
+            throw new RuntimeException("Can only reject PENDING applications!");
+        }
+
+        customer.setStatus(CustomerStatus.REJECTED);
+        customerRepository.save(customer);
+
+        emailService.sendRejectionEmail(customer.getEmail(), customer.getName(), reason);
+    }
+
     public Account getAccount(Long id) {
         log.info("Fetching account by ID: {}", id);
         return accountRepository.findById(id)
@@ -115,10 +141,11 @@ public class AccountService {
 
     // --- INTERNAL APIs for AUTH SERVICE ---
 
-    public boolean verifyCustomerCredentials(String clientId, String password) {
+    public String verifyCustomerCredentials(String clientId, String password) {
         return customerRepository.findByClientId(clientId)
-                .map(customer -> customer.getPasswordHash().equals(password))
-                .orElse(false);
+                .filter(customer -> customer.getPasswordHash().equals(password))
+                .map(customer -> customer.getRole() != null ? customer.getRole().name() : Role.ROLE_USER.name())
+                .orElse("INVALID");
     }
 
     public boolean requiresPasswordChange(String clientId) {
@@ -134,5 +161,32 @@ public class AccountService {
         customer.setPasswordHash(newPassword);
         customer.setRequiresPasswordChange(false);
         customerRepository.save(customer);
+    }
+
+    public UserProfileResponse getUserProfile(String clientId) {
+        // 1. Find the customer
+        Customer customer = customerRepository.findByClientId(clientId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        // 2. Find the customer's account
+        List<Account> accounts = accountRepository.findByCustomerId(customer.getId());
+        if (accounts.isEmpty()) {
+            throw new RuntimeException("No active accounts found for customer");
+        }
+        Account account = accounts.get(0);
+
+        // 3. Merge them into one beautiful JSON response!
+        return new UserProfileResponse(
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhoneNumber(),
+                customer.getAddress(),
+                customer.getPhotoUrl(),
+                customer.getClientId(),
+                account.getIban(),
+                account.getBic(),
+                account.getBalance(),
+                account.getAccountType()
+        );
     }
 }

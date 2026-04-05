@@ -10,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Authentication Management", description = "Endpoints for user login and password management")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -20,13 +23,14 @@ public class AuthController {
     private final AccountServiceClient accountServiceClient; // The Phone Line to AccountService!
     private final JwtUtils jwtUtils; // The cryptographic token generator
 
+    @Operation(summary = "Authenticate User", description = "Verifies the client ID and password to grant an access token.")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         log.info("Attempting login for Client ID: {}", request.clientId());
         
-        // 1. Ask AccountService if the password is correct
-        Boolean isValid = accountServiceClient.verifyCredentials(request.clientId(), request.password());
-        if (!Boolean.TRUE.equals(isValid)) {
+        // 1. Ask AccountService if the password is correct, and fetch their Role!
+        String role = accountServiceClient.verifyCredentials(request.clientId(), request.password());
+        if ("INVALID".equals(role)) {
             // Return 401 Unauthorized
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(null, "Invalid Credentials"));
         }
@@ -38,20 +42,21 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(null, "PASSWORD_CHANGE_REQUIRED"));
         }
 
-        // 3. Generate a secure Login Token!
-        String token = jwtUtils.generateJwtToken(request.clientId());
+        // 3. Generate a secure Login Token infused with the User's Role!
+        String token = jwtUtils.generateJwtToken(request.clientId(), role);
         
         // Return 200 OK
         return ResponseEntity.ok(new AuthResponse(token, "Login Successful!"));
     }
 
+    @Operation(summary = "Change Password", description = "Changes the temporary password to a user-defined secure password and auto-logs them in.")
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
         log.info("Attempting password reset for Client ID: {}", request.clientId());
 
         // 1. Verify old password first
-        Boolean isValid = accountServiceClient.verifyCredentials(request.clientId(), request.oldPassword());
-        if (!Boolean.TRUE.equals(isValid)) {
+        String role = accountServiceClient.verifyCredentials(request.clientId(), request.oldPassword());
+        if ("INVALID".equals(role)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(null, "Invalid Old Password"));
         }
 
@@ -59,7 +64,7 @@ public class AuthController {
         accountServiceClient.changePassword(request.clientId(), request.newPassword());
 
         // 3. Log them in automatically with the new password!
-        String token = jwtUtils.generateJwtToken(request.clientId());
+        String token = jwtUtils.generateJwtToken(request.clientId(), role);
         
         return ResponseEntity.ok(new AuthResponse(token, "Password changed successfully! You are now logged in."));
     }

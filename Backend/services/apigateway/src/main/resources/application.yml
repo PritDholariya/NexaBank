@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: api-gateway
+  config:
+    import: optional:file:../../.env[.properties]
   cloud:
     gateway:
       globalcors:
@@ -27,13 +29,40 @@ spring:
           uri: lb://ACCOUNT-SERVICE # lb stands for Load Balancer. It asks the Phonebook (Eureka) for the IP address!
           predicates:
             - Path=/api/accounts/** # Any URL starting with this gets sent to the Account Service
+          filters:
+            - AuthenticationFilter
         
         - id: auth-service-route
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/api/auth/**
 
+        - id: openapi-account
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/v3/api-docs/account-service
+          filters:
+            - RewritePath=/v3/api-docs/account-service, /v3/api-docs
+
+        - id: openapi-auth
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/v3/api-docs/auth-service
+          filters:
+            - RewritePath=/v3/api-docs/auth-service, /v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Account Service
+        url: /v3/api-docs/account-service
+      - name: Auth Service
+        url: /v3/api-docs/auth-service
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: ${JWT_SECRET}
