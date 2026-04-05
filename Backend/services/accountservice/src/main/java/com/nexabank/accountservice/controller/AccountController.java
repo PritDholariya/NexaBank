@@ -4,6 +4,10 @@ import com.nexabank.accountservice.dto.AccountRegistrationRequest;
 import com.nexabank.accountservice.dto.AccountRegistrationResponse;
 import com.nexabank.accountservice.dto.AccountApprovalResponse;
 import com.nexabank.accountservice.dto.UserProfileResponse;
+import com.nexabank.accountservice.dto.RejectionRequest;
+import com.nexabank.accountservice.entity.CustomerStatus;
+import com.nexabank.accountservice.entity.Customer;
+import java.util.List;
 import com.nexabank.accountservice.entity.Account;
 import com.nexabank.accountservice.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +42,20 @@ public class AccountController {
         return ResponseEntity.ok(accountService.approveCustomerApplication(customerId));
     }
 
+    @Operation(summary = "Get Customers", description = "Admin endpoint to fetch all customers, optionally filtered by status")
+    @GetMapping("/admin/customers")
+    public ResponseEntity<List<Customer>> getCustomers(@RequestParam(name = "status", required = false) CustomerStatus status) {
+        return ResponseEntity.ok(accountService.getCustomersByStatus(status));
+    }
+
+    @Operation(summary = "Reject customer application", description = "Admin endpoint to reject a pending customer application and send feedback.")
+    @PostMapping("/admin/reject/{customerId}")
+    public ResponseEntity<String> rejectAccount(@PathVariable("customerId") Long customerId, @RequestBody RejectionRequest request) {
+        log.info("Received request to reject account for customer ID: {} with reason: {}", customerId, request.reason());
+        accountService.rejectCustomerApplication(customerId, request.reason());
+        return ResponseEntity.ok("Account rejected! Email sent to the user.");
+    }
+
     @Operation(summary = "Get an account by ID", description = "Retrieves the account details using the specific account ID.")
     @GetMapping("/{id}")
     public ResponseEntity<Account> getAccount(@PathVariable("id") Long id) {
@@ -56,7 +74,7 @@ public class AccountController {
     
     @io.swagger.v3.oas.annotations.Hidden
     @PostMapping("/internal/verify")
-    public ResponseEntity<Boolean> verifyCredentials(@RequestParam("clientId") String clientId, @RequestParam("password") String password) {
+    public ResponseEntity<String> verifyCredentials(@RequestParam("clientId") String clientId, @RequestParam("password") String password) {
         return ResponseEntity.ok(accountService.verifyCustomerCredentials(clientId, password));
     }
 

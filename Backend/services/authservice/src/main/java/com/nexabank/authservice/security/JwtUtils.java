@@ -24,9 +24,10 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateJwtToken(String clientId) {
+    public String generateJwtToken(String clientId, String role) {
         return Jwts.builder()
                 .setSubject(clientId)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)

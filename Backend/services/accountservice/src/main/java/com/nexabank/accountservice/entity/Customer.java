@@ -25,6 +25,9 @@ public class Customer {
     private String clientId;
 
     @Enumerated(EnumType.STRING)
+    private Role role = Role.ROLE_USER; // Default to standard user
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CustomerStatus status;
 

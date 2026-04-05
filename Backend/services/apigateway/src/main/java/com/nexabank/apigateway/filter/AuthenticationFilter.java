@@ -44,10 +44,21 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
                     jwtUtil.validateToken(authHeader);
                     
-                    // 2.5 EXTRACT the ClientId and secretly inject it into the request!
+                    // 2.5 EXTRACT the ClientId and Role!
                     String clientId = jwtUtil.extractClientId(authHeader);
+                    String role = jwtUtil.extractRole(authHeader);
                     
-                    // Modify the HTTP request to add the hidden X-Client-Id header
+                    // 3. RBAC (Role-Based Access Control)
+                    // If the user is trying to access ANY /admin/ endpoint, verify they are an admin!
+                    if (exchange.getRequest().getURI().getPath().contains("/admin/")) {
+                        if (!"ROLE_ADMIN".equals(role)) {
+                            System.out.println("ACCESS DENIED: Standard user attempted to access Admin Vault!");
+                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN); // 403 Forbidden
+                            return exchange.getResponse().setComplete();
+                        }
+                    }
+                    
+                    // 4. Modify the HTTP request to add the hidden X-Client-Id header
                     exchange = exchange.mutate()
                             .request(exchange.getRequest().mutate()
                                     .header("X-Client-Id", clientId)
