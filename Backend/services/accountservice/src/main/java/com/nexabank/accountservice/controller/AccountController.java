@@ -3,6 +3,7 @@ package com.nexabank.accountservice.controller;
 import com.nexabank.accountservice.dto.AccountRegistrationRequest;
 import com.nexabank.accountservice.dto.AccountRegistrationResponse;
 import com.nexabank.accountservice.dto.AccountApprovalResponse;
+import com.nexabank.accountservice.dto.UserProfileResponse;
 import com.nexabank.accountservice.entity.Account;
 import com.nexabank.accountservice.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,13 @@ public class AccountController {
     public ResponseEntity<Account> getAccount(@PathVariable("id") Long id) {
         log.info("Received request to fetch account details for account ID: {}", id);
         return ResponseEntity.ok(accountService.getAccount(id));
+    }
+
+    @Operation(summary = "Get My Profile", description = "Securely fetches the current user's completely merged Customer and Bank Account profile using the injected X-Client-Id header from the Gateway!")
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponse> getMyProfile(@RequestHeader("X-Client-Id") String clientId) {
+        log.info("Fetching unified profile for Client ID: {}", clientId);
+        return ResponseEntity.ok(accountService.getUserProfile(clientId));
     }
 
     // --- INTERNAL APIs FOR AUTH SERVICE ---

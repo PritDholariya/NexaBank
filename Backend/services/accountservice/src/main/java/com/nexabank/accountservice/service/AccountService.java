@@ -3,6 +3,8 @@ package com.nexabank.accountservice.service;
 import com.nexabank.accountservice.dto.AccountRegistrationRequest;
 import com.nexabank.accountservice.dto.AccountRegistrationResponse;
 import com.nexabank.accountservice.dto.AccountApprovalResponse;
+import com.nexabank.accountservice.dto.UserProfileResponse;
+import java.util.List;
 import com.nexabank.accountservice.entity.Account;
 import com.nexabank.accountservice.entity.Customer;
 import com.nexabank.accountservice.entity.CustomerStatus;
@@ -134,5 +136,32 @@ public class AccountService {
         customer.setPasswordHash(newPassword);
         customer.setRequiresPasswordChange(false);
         customerRepository.save(customer);
+    }
+
+    public UserProfileResponse getUserProfile(String clientId) {
+        // 1. Find the customer
+        Customer customer = customerRepository.findByClientId(clientId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        // 2. Find the customer's account
+        List<Account> accounts = accountRepository.findByCustomerId(customer.getId());
+        if (accounts.isEmpty()) {
+            throw new RuntimeException("No active accounts found for customer");
+        }
+        Account account = accounts.get(0);
+
+        // 3. Merge them into one beautiful JSON response!
+        return new UserProfileResponse(
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhoneNumber(),
+                customer.getAddress(),
+                customer.getPhotoUrl(),
+                customer.getClientId(),
+                account.getIban(),
+                account.getBic(),
+                account.getBalance(),
+                account.getAccountType()
+        );
     }
 }

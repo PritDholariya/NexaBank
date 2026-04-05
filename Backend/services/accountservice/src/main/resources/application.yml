@@ -4,11 +4,13 @@ server:
 spring:
   application:
     name: account-service
+  config:
+    import: optional:file:../../.env[.properties]
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/nexa_bank
-    username: nexa
-    password: nexa_password
+    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
