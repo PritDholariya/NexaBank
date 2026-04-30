@@ -28,6 +28,7 @@
         <module>services/apigateway</module>
         <module>services/accountservice</module>
         <module>services/authservice</module>
+        <module>services/transactionservice</module>
     </modules>
 
     <!-- dependencyManagement acts like a blueprint for dependencies -->
