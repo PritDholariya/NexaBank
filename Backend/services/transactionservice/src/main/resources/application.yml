@@ -1,5 +1,6 @@
 server:
   port: 8083
+  forward-headers-strategy: framework
 
 spring:
   application:
@@ -30,6 +31,4 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs/transaction-service
+

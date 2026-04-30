@@ -1,9 +1,7 @@
 server:
   port: 8081 # This runs on its own unique port
+  forward-headers-strategy: framework
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs/account-service
 
 spring:
   kafka:

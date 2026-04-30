@@ -58,6 +58,13 @@ spring:
           filters:
             - RewritePath=/v3/api-docs/auth-service, /v3/api-docs
 
+        - id: openapi-transaction
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/v3/api-docs/transaction-service
+          filters:
+            - RewritePath=/v3/api-docs/transaction-service, /v3/api-docs
+
 springdoc:
   swagger-ui:
     urls:
