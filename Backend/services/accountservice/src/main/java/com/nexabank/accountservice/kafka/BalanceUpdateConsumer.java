@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BalanceUpdateConsumer {
 
     private final AccountRepository accountRepository;
+    private final TransactionStatusProducer transactionStatusProducer;
 
     @Transactional
     @KafkaListener(topics = "balance-updates", groupId = "account-service-group")
@@ -33,9 +34,19 @@ public class BalanceUpdateConsumer {
             log.info("KAFKA CONSUMER: Withdrew {}. New balance: {}", event.amount(), account.getBalance());
         }
 
-        accountRepository.save(account);
-        
-        // Note: In Phase 6 we will implement a Saga pattern where we ping the TransactionService back 
-        // to update its status from PENDING to COMPLETED. For Phase 5, we just update the balance.
+        try {
+            accountRepository.save(account);
+            // Success! Tell Transaction Service to mark it as COMPLETED
+            transactionStatusProducer.publishStatusUpdate(
+                new com.nexabank.accountservice.dto.TransactionStatusEvent(event.transactionId(), "COMPLETED")
+            );
+        } catch (Exception e) {
+            log.error("KAFKA CONSUMER: Failed to update balance for IBAN {}", event.iban(), e);
+            // Tell Transaction Service to mark it as FAILED
+            transactionStatusProducer.publishStatusUpdate(
+                new com.nexabank.accountservice.dto.TransactionStatusEvent(event.transactionId(), "FAILED")
+            );
+            throw e; // Rethrow so Spring's Transaction manager rolls it back
+        }
     }
 }
