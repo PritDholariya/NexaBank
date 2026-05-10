@@ -30,10 +30,10 @@ public class AccountService {
     private final EmailService emailService;
 
     // STEP 1: USER APPLICATION
-    @Transactional 
+    @Transactional
     public AccountRegistrationResponse registerCustomerAccount(AccountRegistrationRequest request) {
         log.info("Starting account registration process for: {}", request.email());
-        
+
         Customer customer = Customer.builder()
                 .name(request.name())
                 .email(request.email())
@@ -42,11 +42,12 @@ public class AccountService {
                 .dateOfBirth(request.dateOfBirth())
                 .governmentId(request.governmentId())
                 .preferredAccountType(request.accountType())
-                // Set the status to PENDING, force password change, but NO clientId or password yet!
+                // Set the status to PENDING, force password change, but NO clientId or password
+                // yet!
                 .status(CustomerStatus.PENDING)
                 .requiresPasswordChange(true)
                 .build();
-        
+
         customer = customerRepository.save(customer);
 
         emailService.sendPendingReviewEmail(customer.getEmail(), customer.getName());
@@ -54,15 +55,14 @@ public class AccountService {
         return new AccountRegistrationResponse(
                 customer.getId(),
                 CustomerStatus.PENDING,
-                "Your application is securely saved and is pending admin review."
-        );
+                "Your application is securely saved and is pending admin review.");
     }
 
     // STEP 2: ADMIN APPROVAL
-    @Transactional 
+    @Transactional
     public AccountApprovalResponse approveCustomerApplication(Long customerId) {
         log.info("Admin approval process initiated for customer ID: {}", customerId);
-        
+
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> {
                     log.error("Approval failed. Customer ID {} not found.", customerId);
@@ -75,8 +75,8 @@ public class AccountService {
 
         // 1. Generate core banking credentials
         String clientId = "NEXA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String rawPassword = UUID.randomUUID().toString().substring(0, 8); 
-        
+        String rawPassword = UUID.randomUUID().toString().substring(0, 8);
+
         customer.setClientId(clientId);
         customer.setPasswordHash(rawPassword); // IN PRODUCTION: This MUST be Bcrypt encrypted!
         customer.setStatus(CustomerStatus.APPROVED);
@@ -103,8 +103,7 @@ public class AccountService {
                 clientId,
                 iban,
                 bic,
-                "Account Approved and generated! Sent credentials via email."
-        );
+                "Account Approved and generated! Sent credentials via email.");
     }
 
     public List<Customer> getCustomersByStatus(CustomerStatus status) {
@@ -137,6 +136,11 @@ public class AccountService {
                     log.error("Account ID {} not found.", id);
                     return new RuntimeException("Account not found with ID: " + id);
                 });
+    }
+
+    // --- INTERNAL APIs for Transaction SERVICE ---
+    public boolean verifyIban(String iban) {
+        return accountRepository.findByIban(iban).isPresent();
     }
 
     // --- INTERNAL APIs for AUTH SERVICE ---
@@ -186,7 +190,6 @@ public class AccountService {
                 account.getIban(),
                 account.getBic(),
                 account.getBalance(),
-                account.getAccountType()
-        );
+                account.getAccountType());
     }
 }

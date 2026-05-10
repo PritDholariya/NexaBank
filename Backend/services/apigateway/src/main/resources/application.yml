@@ -37,6 +37,13 @@ spring:
           predicates:
             - Path=/api/auth/**
 
+        - id: transaction-service-route
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/api/transactions/**
+          filters:
+            - AuthenticationFilter
+
         - id: openapi-account
           uri: lb://ACCOUNT-SERVICE
           predicates:
@@ -51,6 +58,13 @@ spring:
           filters:
             - RewritePath=/v3/api-docs/auth-service, /v3/api-docs
 
+        - id: openapi-transaction
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/v3/api-docs/transaction-service
+          filters:
+            - RewritePath=/v3/api-docs/transaction-service, /v3/api-docs
+
 springdoc:
   swagger-ui:
     urls:
@@ -58,6 +72,8 @@ springdoc:
         url: /v3/api-docs/account-service
       - name: Auth Service
         url: /v3/api-docs/auth-service
+      - name: Transaction Service
+        url: /v3/api-docs/transaction-service
 
 eureka:
   client:

@@ -90,4 +90,10 @@ public class AccountController {
         accountService.updatePassword(clientId, newPassword);
         return ResponseEntity.ok().build();
     }
+
+    @io.swagger.v3.oas.annotations.Hidden
+    @GetMapping("/internal/verify-iban")
+    public ResponseEntity<Boolean> verifyIban(@RequestParam("iban") String iban) {
+        return ResponseEntity.ok(accountService.verifyIban(iban));
+    }
 }
