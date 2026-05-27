@@ -1,0 +1,37 @@
+server:
+  port: 8084
+  forward-headers-strategy: framework
+  error:
+    include-message: always
+    include-stacktrace: always  # Ensures Swagger URLs resolve correctly through the Gateway
+
+spring:
+  application:
+    name: notification-service
+  config:
+    import: optional:file:../../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update  # Auto-creates the notifications table on first startup
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: notification-service-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -1,0 +1,12 @@
+com\nexabank\notificationservice\NotificationserviceApplication.class
+com\nexabank\notificationservice\dto\NotificationResponse.class
+com\nexabank\notificationservice\repository\NotificationRepository.class
+com\nexabank\notificationservice\config\KafkaConfig.class
+com\nexabank\notificationservice\entity\NotificationType.class
+com\nexabank\notificationservice\entity\Notification.class
+com\nexabank\notificationservice\dto\BalanceUpdateEvent.class
+com\nexabank\notificationservice\service\NotificationService.class
+com\nexabank\notificationservice\kafka\NotificationConsumer.class
+com\nexabank\notificationservice\controller\NotificationController.class
+com\nexabank\notificationservice\dto\TransactionStatusEvent.class
+com\nexabank\notificationservice\entity\Notification$NotificationBuilder.class

@@ -1,7 +1,1 @@
-com\nexabank\authservice\security\JwtUtils.class
-com\nexabank\authservice\dto\AuthResponse.class
-com\nexabank\authservice\AuthserviceApplication.class
 com\nexabank\authservice\client\AccountServiceClient.class
-com\nexabank\authservice\controller\AuthController.class
-com\nexabank\authservice\dto\ChangePasswordRequest.class
-com\nexabank\authservice\dto\LoginRequest.class

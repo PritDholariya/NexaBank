@@ -42,9 +42,10 @@ public class TransactionService {
 
         transaction = transactionRepository.save(transaction);
         
-        // Step 5: Publish event to Kafka
+        // Step 5: Publish event to Kafka (include clientId + transactionType for Notification Service)
         transactionProducer.publishBalanceUpdate(
-            new BalanceUpdateEvent(transaction.getId(), profile.iban(), transaction.getAmount(), "CREDIT")
+            new BalanceUpdateEvent(transaction.getId(), profile.iban(), transaction.getAmount(), "CREDIT",
+                                   profile.clientId(), transaction.getType().name())
         );
 
         return new TransactionResponse(
@@ -77,9 +78,10 @@ public class TransactionService {
 
         transaction = transactionRepository.save(transaction);
         
-        // Step 5: Publish event to Kafka
+        // Step 5: Publish event to Kafka (include clientId + transactionType for Notification Service)
         transactionProducer.publishBalanceUpdate(
-            new BalanceUpdateEvent(transaction.getId(), profile.iban(), transaction.getAmount(), "DEBIT")
+            new BalanceUpdateEvent(transaction.getId(), profile.iban(), transaction.getAmount(), "DEBIT",
+                                   profile.clientId(), transaction.getType().name())
         );
 
         return new TransactionResponse(
@@ -127,11 +129,15 @@ public class TransactionService {
         transaction = transactionRepository.save(transaction);
         
         // Step 5: Publish events to Kafka (One to DEBIT the sender, one to CREDIT the receiver!)
+        // Include clientId + transactionType so Notification Service knows who to notify.
+        // Note: CREDIT event carries receiver IBAN; Account Service resolves clientId from IBAN for the status event.
         transactionProducer.publishBalanceUpdate(
-            new BalanceUpdateEvent(transaction.getId(), profile.iban(), transaction.getAmount(), "DEBIT")
+            new BalanceUpdateEvent(transaction.getId(), profile.iban(), transaction.getAmount(), "DEBIT",
+                                   profile.clientId(), transaction.getType().name())
         );
         transactionProducer.publishBalanceUpdate(
-            new BalanceUpdateEvent(transaction.getId(), request.receiverIban(), transaction.getAmount(), "CREDIT")
+            new BalanceUpdateEvent(transaction.getId(), request.receiverIban(), transaction.getAmount(), "CREDIT",
+                                   null, transaction.getType().name()) // receiver clientId resolved by Account Service
         );
 
         return new TransactionResponse(
