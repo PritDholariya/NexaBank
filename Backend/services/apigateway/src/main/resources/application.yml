@@ -44,6 +44,13 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id: notification-service-route
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - AuthenticationFilter
+
         - id: openapi-account
           uri: lb://ACCOUNT-SERVICE
           predicates:
@@ -65,6 +72,13 @@ spring:
           filters:
             - RewritePath=/v3/api-docs/transaction-service, /v3/api-docs
 
+        - id: openapi-notification
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/v3/api-docs/notification-service
+          filters:
+            - RewritePath=/v3/api-docs/notification-service, /v3/api-docs
+
 springdoc:
   swagger-ui:
     urls:
@@ -74,6 +88,8 @@ springdoc:
         url: /v3/api-docs/auth-service
       - name: Transaction Service
         url: /v3/api-docs/transaction-service
+      - name: Notification Service
+        url: /v3/api-docs/notification-service
 
 eureka:
   client:
