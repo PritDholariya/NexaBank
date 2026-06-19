@@ -1,19 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 
 import { Navbar } from "@/components/navbar";
-
-const headingFont = Sora({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-});
-
-const bodyFont = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 const featureCards = [
   {
@@ -79,9 +68,7 @@ const footerGroups = [
 
 export default function Home() {
   return (
-    <div
-      className={`${bodyFont.className} min-h-screen overflow-x-hidden bg-[#f7f8ff] text-[#101a33]`}
-    >
+    <div className="min-h-screen overflow-x-hidden bg-[#f7f8ff] text-[#101a33]">
       <Navbar />
 
       <main>
@@ -102,9 +89,7 @@ export default function Home() {
                 </span>
                 </div>
 
-                <h1
-                  className={`${headingFont.className} mx-auto mt-8 max-w-5xl text-5xl leading-[1.02] font-extrabold tracking-tight text-[#11182f] sm:text-6xl lg:text-7xl`}
-                >
+                <h1 className="font-heading mx-auto mt-8 max-w-5xl text-5xl leading-[1.02] font-extrabold tracking-tight text-[#11182f] sm:text-6xl lg:text-7xl">
                   Banking that moves
                   <br />
                   <span className="bg-[linear-gradient(135deg,#5a4ff3_0%,#4f7cff_100%)] bg-clip-text text-transparent">
@@ -120,18 +105,18 @@ export default function Home() {
 
                 <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                   <Link
-                    href="#pricing"
+                    href="/open-account"
                     className="group inline-flex w-full items-center justify-center gap-2 rounded-[1.4rem] bg-[linear-gradient(135deg,#5a4ff3_0%,#4f7cff_100%)] px-8 py-4 text-lg font-bold text-white shadow-[0_22px_50px_-24px_rgba(85,102,246,0.45)] transition-all hover:-translate-y-0.5 sm:w-auto"
                   >
                     Start Your Journey
                     <ArrowRightIcon className="size-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link
-                    href="#mobile"
+                    href="/login"
                     className="inline-flex w-full items-center justify-center gap-2 rounded-[1.4rem] border border-[#dde3f6] bg-white px-8 py-4 text-lg font-bold text-[#33415e] transition-colors hover:bg-[#f9faff] sm:w-auto"
                   >
                     <PhoneIcon className="size-5" />
-                    Download App
+                    Client Login
                   </Link>
                 </div>
               </div>
@@ -243,7 +228,7 @@ export default function Home() {
                 Banking features
               </p>
               <h2
-                className={`${headingFont.className} mt-4 text-4xl font-bold tracking-tight text-[#10233d] md:text-5xl`}
+                className="font-heading mt-4 text-4xl font-bold tracking-tight text-[#10233d] md:text-5xl"
               >
                 Everything users expect from a premium bank
               </h2>
@@ -286,7 +271,7 @@ export default function Home() {
                   <p className="text-sm font-extrabold tracking-[0.22em] text-[#9edcff] uppercase">
                     Transparent pricing
                   </p>
-                  <h2 className={`${headingFont.className} mt-4 text-4xl font-bold leading-tight md:text-5xl`}>
+                  <h2 className="font-heading mt-4 text-4xl font-bold leading-tight md:text-5xl">
                     Clear charges help customers trust the bank faster.
                   </h2>
                   <p className="mt-6 max-w-xl text-lg leading-8 text-[#d4e4f1]">
@@ -354,7 +339,7 @@ export default function Home() {
                   <p className="text-sm font-extrabold tracking-[0.22em] text-[#d5d9ff] uppercase">
                     Mobile-first banking
                   </p>
-                  <h2 className={`${headingFont.className} mt-5 text-4xl font-bold leading-tight text-white md:text-5xl`}>
+                  <h2 className="font-heading mt-5 text-4xl font-bold leading-tight text-white md:text-5xl">
                     Designed for customers who bank from their phone first.
                   </h2>
                   <p className="mt-6 max-w-xl text-lg leading-8 text-[#d2e1f0]">
@@ -435,7 +420,7 @@ export default function Home() {
               Conversion-ready CTA
             </p>
             <h2
-              className={`${headingFont.className} mt-5 text-4xl font-bold tracking-tight text-[#10233d] md:text-5xl`}
+              className="font-heading mt-5 text-4xl font-bold tracking-tight text-[#10233d] md:text-5xl"
             >
               Ready to upgrade your financial life?
             </h2>
@@ -470,7 +455,7 @@ export default function Home() {
                 <div className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#5a4ff3_0%,#4f7cff_100%)] text-white">
                   <BoltIcon className="size-5" />
                 </div>
-                <span className={`${headingFont.className} text-2xl font-bold text-white`}>
+                <span className="font-heading text-2xl font-bold text-white">
                   NexaBank
                 </span>
               </div>

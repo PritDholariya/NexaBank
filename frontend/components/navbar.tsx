@@ -2,19 +2,16 @@
 
 import Link from "next/link";
 import { type ReactNode, useEffect, useState } from "react";
-import { Sora } from "next/font/google";
-
-const headingFont = Sora({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-});
 
 type NavbarItem = {
   href: string;
   label: string;
 };
 
-const items: NavbarItem[] = [];
+const items: NavbarItem[] = [
+  { href: "/login", label: "Customer Login" },
+  { href: "/admin/login", label: "Admin" },
+];
 
 function NavbarLink({
   href,
@@ -75,7 +72,7 @@ export function Navbar() {
             <BoltIcon className="size-5" />
           </div>
           <span
-            className={`${headingFont.className} text-xl font-bold tracking-tight ${
+            className={`font-heading text-xl font-bold tracking-tight ${
               scrolled ? "text-[#1d2740]" : "text-[#1d2740]"
             }`}
           >
@@ -90,7 +87,7 @@ export function Navbar() {
             </NavbarLink>
           ))}
           <Link
-            href="#pricing"
+            href="/open-account"
             className="rounded-full bg-[linear-gradient(135deg,#5a4ff3_0%,#4f7cff_100%)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_40px_-20px_rgba(85,102,246,0.5)] transition-transform hover:-translate-y-0.5"
           >
             Open Account
@@ -116,7 +113,7 @@ export function Navbar() {
               </NavbarLink>
             ))}
             <Link
-              href="#pricing"
+              href="/open-account"
               className="rounded-2xl bg-[linear-gradient(135deg,#5a4ff3_0%,#4f7cff_100%)] px-4 py-3 text-center text-base font-bold text-white"
             >
               Open Account
