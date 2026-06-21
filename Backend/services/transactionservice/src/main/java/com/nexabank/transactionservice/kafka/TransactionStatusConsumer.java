@@ -18,7 +18,11 @@ public class TransactionStatusConsumer {
     private final TransactionRepository transactionRepository;
 
     @Transactional
-    @KafkaListener(topics = "transaction-status-updates", groupId = "transaction-service-group")
+    @KafkaListener(
+            topics = "transaction-status-updates", 
+            groupId = "transaction-service-group",
+            containerFactory = "transactionStatusListenerContainerFactory"
+    )
     public void consumeStatusUpdate(TransactionStatusEvent event) {
         log.info("KAFKA CONSUMER: Received Status Update for Transaction {}: {}", 
                  event.transactionId(), event.status());

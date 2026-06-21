@@ -2,6 +2,7 @@ package com.nexabank.notificationservice.kafka;
 
 import com.nexabank.notificationservice.dto.BalanceUpdateEvent;
 import com.nexabank.notificationservice.dto.TransactionStatusEvent;
+import com.nexabank.notificationservice.dto.FraudAlertEvent;
 import com.nexabank.notificationservice.entity.Notification;
 import com.nexabank.notificationservice.entity.NotificationType;
 import com.nexabank.notificationservice.repository.NotificationRepository;
@@ -84,5 +85,34 @@ public class NotificationConsumer {
 
         notificationRepository.save(notification);
         log.info("Saved {} notification for Client: {}", notification.getType(), event.clientId());
+    }
+
+    // Phase 8: Added consumer for fraud detection alerts
+    @KafkaListener(
+            topics = "fraud-alerts",
+            groupId = "notification-service-group",
+            containerFactory = "fraudAlertListenerContainerFactory"
+    )
+    public void consumeFraudAlert(FraudAlertEvent event) {
+        log.info("KAFKA CONSUMER: Received FraudAlertEvent for Transaction: {}", event.transactionId());
+
+        if (event.clientId() == null) {
+            log.warn("Missing clientId in FraudAlertEvent {}. Cannot create notification.", event.transactionId());
+            return;
+        }
+
+        if (Boolean.TRUE.equals(event.isFraud())) {
+            Notification notification = Notification.builder()
+                    .clientId(event.clientId())
+                    .referenceId(String.valueOf(event.transactionId()))
+                    .type(NotificationType.FRAUD_ALERT)
+                    .message(String.format("⚠️ Suspicious activity detected on transaction %d. Fraud score: %.2f", 
+                                           event.transactionId(), event.fraudScore()))
+                    .amount(event.amount())
+                    .build();
+
+            notificationRepository.save(notification);
+            log.info("Saved FRAUD_ALERT notification for Client: {}", event.clientId());
+        }
     }
 }

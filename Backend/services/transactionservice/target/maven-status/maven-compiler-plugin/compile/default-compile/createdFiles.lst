@@ -5,7 +5,9 @@ com\nexabank\transactionservice\entity\TransactionType.class
 com\nexabank\transactionservice\service\TransactionService.class
 com\nexabank\transactionservice\repository\TransactionRepository.class
 com\nexabank\transactionservice\kafka\TransactionProducer.class
+com\nexabank\transactionservice\dto\FraudAlertEvent.class
 com\nexabank\transactionservice\entity\TransactionStatus.class
+com\nexabank\transactionservice\kafka\FraudAlertConsumer.class
 com\nexabank\transactionservice\dto\UserProfileDto.class
 com\nexabank\transactionservice\kafka\TransactionStatusConsumer.class
 com\nexabank\transactionservice\controller\TransactionController.class

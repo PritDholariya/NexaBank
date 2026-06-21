@@ -1,3 +1,24 @@
 docs/
 *.env
 .env
+
+# --- Python & Fraud Service ---
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.pkl
+training_data.csv
+
+# # --- Java & Spring Boot ---
+# target/
+# *.jar
+# *.war
+# .idea/
+# *.iml
+# .classpath
+# .project
+# .settings/
+# .vscode/

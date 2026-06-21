@@ -9,5 +9,6 @@ public enum NotificationType {
     TRANSFER_SENT,      // User sent a transfer out
     TRANSFER_RECEIVED,  // User received a transfer in
     TRANSACTION_COMPLETED, // Saga confirmed the transaction as COMPLETED
-    TRANSACTION_FAILED     // Saga confirmed the transaction as FAILED
+    TRANSACTION_FAILED,    // Saga confirmed the transaction as FAILED
+    FRAUD_ALERT            // Phase 8: Added for Fraud Detection Service
 }

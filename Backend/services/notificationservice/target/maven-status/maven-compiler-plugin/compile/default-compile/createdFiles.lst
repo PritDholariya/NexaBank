@@ -1,6 +1,7 @@
 com\nexabank\notificationservice\NotificationserviceApplication.class
 com\nexabank\notificationservice\dto\NotificationResponse.class
 com\nexabank\notificationservice\repository\NotificationRepository.class
+com\nexabank\notificationservice\dto\FraudAlertEvent.class
 com\nexabank\notificationservice\config\KafkaConfig.class
 com\nexabank\notificationservice\entity\NotificationType.class
 com\nexabank\notificationservice\entity\Notification.class

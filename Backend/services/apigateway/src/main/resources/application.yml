@@ -44,10 +44,18 @@ spring:
           filters:
             - AuthenticationFilter
 
-        - id: notification-service-route
+        - id: notification-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/api/notifications/**
+          filters:
+            - AuthenticationFilter
+            
+        # Phase 8: Added for Fraud Detection Service
+        - id: fraud-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/fraud/**
           filters:
             - AuthenticationFilter
 
