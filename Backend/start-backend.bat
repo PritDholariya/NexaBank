@@ -21,6 +21,8 @@ timeout /t 15
 start "API Gateway" cmd /k mvn spring-boot:run -pl services/apigateway
 start "Account Service" cmd /k mvn spring-boot:run -pl services/accountservice
 start "Auth Service" cmd /k mvn spring-boot:run -pl services/authservice
+start "Transaction Service" cmd /k mvn spring-boot:run -pl services/transactionservice
+start "Notification Service" cmd /k mvn spring-boot:run -pl services/notificationservice
 
 echo.
 echo ==========================================
